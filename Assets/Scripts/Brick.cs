@@ -10,11 +10,15 @@ public class Brick : MonoBehaviour
     
     public int PointValue;
 
+
     void Start()
     {
         var renderer = GetComponentInChildren<Renderer>();
 
         MaterialPropertyBlock block = new MaterialPropertyBlock();
+
+         
+
         switch (PointValue)
         {
             case 1 :
@@ -31,7 +35,11 @@ public class Brick : MonoBehaviour
                 break;
         }
         renderer.SetPropertyBlock(block);
+
     }
+
+
+
 
     private void OnCollisionEnter(Collision other)
     {
@@ -40,4 +48,6 @@ public class Brick : MonoBehaviour
         //slight delay to be sure the ball have time to bounce
         Destroy(gameObject, 0.2f);
     }
+
+    
 }

@@ -18,10 +18,15 @@ public class BallColliding : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.name == "BrickPrefab(Clone)")
-        {
-            newColor = collision.gameObject.GetComponent<MeshRenderer>().material.color;
-        }
+        
+            if (collision.gameObject.CompareTag("Brick"))
+            {
+            newColor = collision.gameObject.GetComponent<Renderer>().material.color;
+                Debug.Log("Touched the color: " + newColor);
+            }
+        
 
+
+        
     }
 }

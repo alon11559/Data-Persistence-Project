@@ -23,7 +23,7 @@ public class MainManager : MonoBehaviour
     public AudioClip brickHit;
     public AudioSource audioSource;
 
-    public ParticleSystem hitVfx;
+    public ParticleSystem _pfx;
 
     public GameObject ball;
 
@@ -32,11 +32,6 @@ public class MainManager : MonoBehaviour
     void Start()
     {
         const float step = 0.6f;
-        var pfxMain = hitVfx.main;
-        pfxMain.startColor = BallColliding.newColor;
-        hitVfx.main = pfxMain;
-        
-
 
         int perLine = Mathf.FloorToInt(4.0f / step);
 
@@ -58,7 +53,7 @@ public class MainManager : MonoBehaviour
     {
         if (!m_GameOver)
         {
-            hitVfx.transform.position = ball.transform.position;
+            _pfx.transform.position = ball.transform.position;
         }
 
         if (!m_Started)
@@ -97,8 +92,11 @@ public class MainManager : MonoBehaviour
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
         audioSource.PlayOneShot(brickHit);
-        
-        hitVfx.Play();
+
+        var main = _pfx.main;
+        main.startColor = new ParticleSystem.MinMaxGradient(BallColliding.newColor);
+
+
         HighScoreUpdater();
     }
 
