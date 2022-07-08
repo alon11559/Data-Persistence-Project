@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.ParticleSystemJobs;
 
 public class MainManager : MonoBehaviour
 {
@@ -15,16 +16,26 @@ public class MainManager : MonoBehaviour
     private bool m_Started = false;
     private int m_Points;
     public static int m_HighScore;
+    public static string nameOfPlayerWithHighScore;
 
     private bool m_GameOver = false;
 
+    public AudioClip brickHit;
+    public AudioSource audioSource;
 
+    public ParticleSystem hitVfx;
 
+    public GameObject ball;
 
+    
 
     void Start()
     {
         const float step = 0.6f;
+        var pfxMain = hitVfx.main;
+        pfxMain.startColor = BallColliding.newColor;
+        hitVfx.main = pfxMain;
+        
 
 
         int perLine = Mathf.FloorToInt(4.0f / step);
@@ -42,8 +53,14 @@ public class MainManager : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
+        if (!m_GameOver)
+        {
+            hitVfx.transform.position = ball.transform.position;
+        }
+
         if (!m_Started)
         {
             if (Input.GetKeyDown(KeyCode.Space))
@@ -62,23 +79,26 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                MenuManager.SaveHighScore();
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         }
 
         if (MenuManager.Instance != null)
         {
-            NameText.text = "Best Score: " + MenuUIManager.nameOfPlayer + ": " + m_HighScore;
+            NameText.text = "Best Score: " + nameOfPlayerWithHighScore + ": " + m_HighScore;
         }
 
         HighScoreUpdater();
+
     }
 
     void AddPoint(int point)
     {
         m_Points += point;
         ScoreText.text = $"Score : {m_Points}";
+        audioSource.PlayOneShot(brickHit);
+        
+        hitVfx.Play();
         HighScoreUpdater();
     }
 
@@ -87,8 +107,9 @@ public class MainManager : MonoBehaviour
         if (m_Points >= m_HighScore)
         {
             m_HighScore = m_Points;
+            nameOfPlayerWithHighScore = MenuUIManager.nameOfPlayer;
+            MenuManager.SaveHighScore();
         }
-
         return m_HighScore;
     }
 
@@ -96,7 +117,6 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
-        MenuManager.SaveHighScore();
     }
 
     public void BackToMainMenu()

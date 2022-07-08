@@ -27,10 +27,8 @@ public class MenuUIManager : MonoBehaviour
     {
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
-        MenuManager.SaveHighScore();
 #else
         Application.Quit;
-        MenuManager.SaveHighScore();
 #endif
     }
 

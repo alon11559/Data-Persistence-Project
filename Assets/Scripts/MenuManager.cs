@@ -10,10 +10,6 @@ public class MenuManager : MonoBehaviour
 {
     public static MenuManager Instance;
 
-    public static int HighScore;
-
-     
-
     private void Awake()
     {
 
@@ -26,35 +22,29 @@ public class MenuManager : MonoBehaviour
         Instance = this;
 
         DontDestroyOnLoad(gameObject);
-        HighScore = MainManager.m_HighScore;
-        DontDestroyOnLoad(gameObject);
 
     }
-
-
 
     [System.Serializable]
     
     class SaveData
     {
         public int HighScore;
+        public string nameOfPlayer;
+
     }
 
     public static void SaveHighScore()
     {
         SaveData data = new SaveData();
 
-        data.HighScore = HighScore;
+        data.HighScore = MainManager.m_HighScore;
+        data.nameOfPlayer = MainManager.nameOfPlayerWithHighScore;
 
         string json = JsonUtility.ToJson(data);
 
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
 
-
-         int timesWrittenToJson = 0;
-        Debug.Log(timesWrittenToJson);
-        timesWrittenToJson++;
-        Debug.Log(timesWrittenToJson);
     }
 
     public static void LoadHighScore()
@@ -66,7 +56,9 @@ public class MenuManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            HighScore = data.HighScore;
+            MainManager.m_HighScore = data.HighScore;
+            MainManager.nameOfPlayerWithHighScore = data.nameOfPlayer;
+
         }
     }
 
